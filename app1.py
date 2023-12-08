@@ -1,6 +1,6 @@
 from openai import OpenAI
 import gradio as gr
-from flask import Flask, render_template
+from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
@@ -27,7 +27,20 @@ gradioUI = gr.Interface(fn=CustomChatGPT, inputs = [gr.Textbox(label="Ask Your Q
 
 @app.route("/")
 def home():
-    return render_template(index.html, iface=gradioUI)
+    template = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Gradio + Flask Integration</title>
+        <script src="https://cdn.jsdelivr.net/npm/@gradio/core/dist/gradio.min.js"></script>
+    </head>
+    <body>
+        <h1>Welcome to Gradio + Flask Integration</h1>
+        {{ iface }}
+    </body>
+    </html>
+    """
+    return render_template_string(template, iface=gradioUI)
 
 if __name__ == "__main__":
     gradioUI.launch()
